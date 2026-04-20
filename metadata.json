@@ -1,0 +1,6 @@
+{
+  "name": "US Salary & Career Oracle (2026-2060)",
+  "description": "The authoritative AI-powered predictive engine for US salary (2026-2060). Optimized for the OBBBA tax laws and the 2030 SALT Cliff transition.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["COL_ANALYSIS", "TAX_FORECASTING", "CAREER_PIVOTING", "2060_PREDICTIONS"]
+}

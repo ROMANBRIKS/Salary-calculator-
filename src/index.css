@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-bg: #0A0B0D;
+  --color-card: #15171C;
+  --color-accent: #2E90FA;
+  --color-accent-light: #53B1FD;
+  --color-text: #F9FAFB;
+  --color-text-muted: #94A3B8;
+  --color-border: #2D3139;
+  --color-success: #12B76A;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: inline-block;
+  animation: marquee 30s linear infinite;
+  white-space: nowrap;
+}
+
+@layer base {
+  body {
+    @apply bg-bg text-text antialiased font-sans;
+  }
+}
+
+.oracle-glass {
+  @apply bg-bg/80 backdrop-blur-md border-b border-border sticky top-0 z-40;
+}
+
+/* The Fintech Glass Look */
+.calculator-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.oracle-card {
+  @apply bg-card border border-border rounded-2xl shadow-sm overflow-hidden;
+}
+
+/* The "Oracle" Neon Highlight */
+.result-text {
+    background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    font-size: 3rem;
+}
+
+/* Smooth Interactive Sliders */
+input[type=range] {
+    accent-color: #4facfe;
+    height: 8px;
+    border-radius: 5px;
+}
+
+.hero-answer {
+  @apply py-10 px-6 md:px-12 flex flex-col justify-center;
+  background: linear-gradient(180deg, rgba(46, 144, 250, 0.05) 0%, rgba(10, 11, 13, 0) 100%);
+}
+
+.answer-header {
+  @apply text-xs uppercase tracking-widest text-accent-light font-bold mb-2;
+}
+
+.answer-big {
+  @apply text-5xl md:text-6xl font-extrabold leading-none tracking-tighter mb-4;
+}
+
+.ai-citation-summary {
+  @apply text-text-muted text-base leading-relaxed max-w-3xl border-l-2 border-accent pl-5;
+}
+
+.tap-btn {
+  @apply bg-accent text-white border-none py-2 px-4 rounded-full text-xs font-semibold cursor-pointer whitespace-nowrap shadow-[0_4px_12px_rgba(46,144,250,0.3)] hover:scale-105 transition-transform;
+}
+

@@ -1,0 +1,21 @@
+{
+  "name": "US Salary & Career Oracle (2026-2060)",
+  "short_name": "Salary Oracle",
+  "description": "Predictive tax and wealth intelligence powered by OBBBA legislation.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0B0D",
+  "theme_color": "#2E90FA",
+  "icons": [
+    {
+      "src": "https://picsum.photos/seed/oracle/192/192",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://picsum.photos/seed/oracle/512/512",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
