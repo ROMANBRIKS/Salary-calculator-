@@ -17,6 +17,8 @@ export interface TaxResult {
   standardDeduction: number;
   saltDeduction: number;
   obbbaDeduction: number;
+  preTaxDeductions: number;
+  totalTax: number;
 }
 
 export interface JobMarketInsight {
@@ -27,8 +29,14 @@ export interface JobMarketInsight {
   increase?: number;
 }
 
+export type PayFrequency = 'weekly' | 'bi-weekly' | 'monthly' | 'annually';
+
 export interface FormData {
+  isHourly: boolean;
   salary: number;
+  hourlyRate: number;
+  hoursPerWeek: number;
+  bonusPay: number;
   state: string;
   filingStatus: FilingStatus;
   year: TaxYear;
@@ -38,6 +46,20 @@ export interface FormData {
   children: number;
   autoLoanInterest: number;
   assumedInflation: number;
+  contribution401k: number;
+  contributionHSA: number;
+  fsaContribution: number;
+  healthPremiums: number;
+  postTaxDeductions: number;
+  propertyValue: number;
+  propertyTaxRate: number;
+  payFrequency: PayFrequency;
+  relocationState: string;
+}
+
+export interface ComparisonData {
+  enabled: boolean;
+  jobB: FormData;
 }
 
 export interface COLData {

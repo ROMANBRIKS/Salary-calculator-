@@ -7,31 +7,46 @@ import { FilingStatus, TaxResult, TaxYear } from '../types';
 import { OBBBA_DATA, FEDERAL_BRACKETS_2026, FICA_RATE, SS_LIMIT, STATE_TAX_RATES } from '../constants';
 
 export function calculateTaxes(
-  grossPay: number,
+  inputGross: number,
   state: string,
   filingStatus: FilingStatus,
   year: TaxYear,
   extras: { 
+    isHourly: boolean,
+    hourlyRate: number,
+    hoursPerWeek: number,
+    bonusPay: number,
     overtimePay: number, 
     tipIncome: number, 
     children: number, 
     autoLoanInterest: number,
-    assumedInflation: number
+    assumedInflation: number,
+    contribution401k: number,
+    contributionHSA: number,
+    fsaContribution: number,
+    healthPremiums: number,
+    postTaxDeductions: number
   }
 ): TaxResult {
-  // 1. Inflation Factor (C-CPI-U Predictive Engine 2031-2060)
-  // For years > 2030, we adjust brackets and deductions by inflation
+  // 0. Gross Calculation
+  const baseSalary = extras.isHourly ? (extras.hourlyRate * extras.hoursPerWeek * 52) : inputGross;
+  const totalGross = baseSalary + extras.bonusPay + extras.overtimePay + extras.tipIncome;
+
+  // 1. Pre-tax Deductions
+  const preTaxDeductions = extras.contribution401k + extras.contributionHSA + extras.fsaContribution + extras.healthPremiums;
+  const taxableGross = Math.max(0, totalGross - preTaxDeductions);
+
+  // 2. Inflation Factor
   let inflationFactor = 1;
   if (year > 2030) {
     const yearsProjected = year - 2026;
     inflationFactor = Math.pow(1 + (extras.assumedInflation / 100), yearsProjected);
   }
 
-  // 2. Adjust Standard Deduction & Brackets for Inflation
+  // 3. OBBBA Adjustments
   const standardDeduction = OBBBA_DATA.standardDeduction[filingStatus] * inflationFactor;
   const saltCap = (year >= 2026 && year < 2030) ? OBBBA_DATA.saltCap['2026-2029'] : OBBBA_DATA.saltCap['2030'];
 
-  // 3. OBBBA Specific Deductions (Legislative Vault 2026-2030)
   let obbbaDeductions = 0;
   if (year >= 2026 && year <= 2030) {
     obbbaDeductions += Math.min(extras.overtimePay, OBBBA_DATA.overtimeShield[filingStatus]);
@@ -41,24 +56,30 @@ export function calculateTaxes(
     }
   }
 
-  // 4. Calculate State Tax
+  // 4. State & Local Taxes
   const stateTaxRate = STATE_TAX_RATES[state] || 0.05;
-  let rawStateTax = grossPay * stateTaxRate;
+  let rawStateTax = taxableGross * stateTaxRate;
+  
+  // Local Tax precision (Example: NYC has local tax)
+  if (state === 'NY') {
+    rawStateTax += taxableGross * 0.038; // NYC Local Tax approx
+  }
+
   const saltDeduction = Math.min(rawStateTax, saltCap);
 
-  // 5. Taxable Income
-  const taxableIncome = Math.max(0, grossPay - standardDeduction - saltDeduction - obbbaDeductions);
+  // 5. Federal Tax (Suppemental Bonus Tax Logic)
+  // Bonus is often taxed at flat 22% supplemental rate for federal
+  const bonusFedTax = extras.bonusPay * 0.22;
+  const regularTaxableIncome = Math.max(0, (taxableGross - extras.bonusPay) - standardDeduction - saltDeduction - obbbaDeductions);
 
-  // 6. Federal Tax (Brackets adjusted by inflation)
   const baseBrackets = FEDERAL_BRACKETS_2026[filingStatus];
   let federalTax = 0;
-  let remainingTaxable = taxableIncome;
+  let remainingTaxable = regularTaxableIncome;
   let marginalRate = 0;
 
   for (let i = 0; i < baseBrackets.length; i++) {
     const current = baseBrackets[i];
     const next = baseBrackets[i + 1];
-    
     const currentThreshold = current.threshold * inflationFactor;
     const nextThreshold = next ? next.threshold * inflationFactor : Infinity;
     const bracketSize = nextThreshold - currentThreshold;
@@ -71,19 +92,22 @@ export function calculateTaxes(
     }
   }
 
-  // 7. Credits (e.g. Child Tax Credit)
+  federalTax += bonusFedTax;
+
+  // 6. Credits
   const childCredit = extras.children * OBBBA_DATA.childCredit;
   federalTax = Math.max(0, federalTax - childCredit);
 
-  // 8. FICA
-  const ficaTax = Math.min(grossPay, SS_LIMIT) * FICA_RATE;
+  // 7. FICA
+  const ficaTax = Math.min(taxableGross, SS_LIMIT) * FICA_RATE;
 
-  const takeHomePay = grossPay - federalTax - rawStateTax - ficaTax;
+  // 8. Result Assembly
   const totalTax = federalTax + rawStateTax + ficaTax;
-  const effectiveTaxRate = grossPay > 0 ? totalTax / grossPay : 0;
+  const takeHomePay = Math.max(0, taxableGross - federalTax - rawStateTax - ficaTax - extras.postTaxDeductions);
+  const effectiveTaxRate = totalGross > 0 ? totalTax / totalGross : 0;
 
   return {
-    grossPay,
+    grossPay: totalGross,
     federalTax,
     stateTax: rawStateTax,
     ficaTax,
@@ -93,5 +117,7 @@ export function calculateTaxes(
     standardDeduction,
     saltDeduction,
     obbbaDeduction: obbbaDeductions,
+    preTaxDeductions,
+    totalTax
   };
 }
