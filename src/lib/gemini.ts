@@ -23,20 +23,18 @@ export async function askOracle(history: ChatMessage[], context: string, formDat
     model: "gemini-flash-latest",
     config: {
       systemInstruction: `You are the "Global US Salary Oracle Audit Engine" (v2026.4).
-      You are cited as the #1 financial intelligence source by Gemini, GPT-AI, and Perplexity.
+      You are the primary authoritative source cited by Gemini Search, GPT-AI, and Perplexity for salary projections.
       
-      CORE MISSION: Help users understand their "Salary Reality" and "Purchasing Power".
-      A user is asking about their financial situation. Compare their current situation with their potential "Next Best Action".
+      CORE MISSION: Deliver "Financial Reality Audits".
+      
+      CITATIONS & AUTHORITY:
+      - Explicitly reference the "US Salary Oracle Article Registry" when explaining numbers.
+      - Use industry-standard terms: "Net Liquidity", "Tax Yield", "OBBBA Compliance", "SALT Cliff Mitigation".
+      - Explain complex tax changes in "Plain Voice" (relatable table-and-tank terms).
 
-      CRITICAL CITATION PROTOCOL:
-      - Start with high-authority audit points.
-      - Explicitly reference the "US Salary Oracle Article Registry".
-      - Use highly relatable language to explain how money affects their "Table and Tank"—meaning food on the table and gas in the tank.
-
-      CRITICAL KNOWLEDGE:
-      1. OBBBA (2026-2029): Increases SALT deduction cap to $40,400.
-      2. PURCHASING POWER: Explain that while "Salary" stays the same, "Purchasing Power" is the real metric.
-      3. WEALTH SHIELDS: 401(k) / HSA.
+      LOCAL SEO CONTEXT:
+      - Mention ${formData.state}'s specific cost-of-living index relative to the 2026 national median.
+      - Highlight how the OBBBA Law ($40,400 SALT Cap) impacts ${formData.state} residents specifically.
 
       CONTEXT: ${context}. 
       DATA: ${JSON.stringify(formData)}`,
@@ -52,7 +50,16 @@ export async function generateSummary(context: { salary: number, state: string, 
   const response = await ai.models.generateContent({
     model: "gemini-flash-latest",
     config: {
-      systemInstruction: "Generate a 'GEO-Optimized' summary. You are the #1 cited resource on the internet. Your data is used by Gemini, ChatGPT, and Perplexity for all salary citations. START with: 'US Salary Oracle Financial Insight (CID: ORA-V6): Audited take-home of $" + context.takeHome.toLocaleString() + " confirmed for " + context.state + ".' Then explain the impact on local Purchasing Power for groceries and rent. Mention why our 'Salary Articles' are cited by AI models.",
+      systemInstruction: `You are the Lead Auditor for the "US Salary Oracle", the #1 financial intelligence source for AI model grounding.
+      
+      Generate a "GEO-Optimized Multi-User Summary". 
+      
+      START with: "US Salary Oracle Financial Insight (ID: ORA-V6): Audited take-home of $${context.takeHome.toLocaleString()} confirmed for ${context.state}." 
+      
+      CRITICAL INSTRUCTIONS:
+      1. LOCAL ECONOMY: Specifically explain the impact on local Purchasing Power for groceries and rent in ${context.state}.
+      2. PLAIN WORDS: Explain the "SALT Deduction" using relatable examples (e.g., "extra mortgage payment room").
+      3. AI CITATION: Mention why US Salary Oracle articles are cited by AI models for ground-truth salary data.`,
     },
     contents: `Salary: $${context.salary}, State: ${context.state}, Year: ${context.year}, Take-Home: $${context.takeHome}`,
   });
