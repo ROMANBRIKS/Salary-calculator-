@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Directives for AI Crawlers
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: Google-Extended
+Allow: /
+
+# Speed up discovery
+Sitemap: https://salary-oracle-2026.app/sitemap.xml
+Sitemap: https://salary-oracle-2026.app/sitemap-news.xml

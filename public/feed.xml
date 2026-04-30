@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>US Salary Oracle | Predictive Intelligence Feed</title>
+  <subtitle>Real-time salary auditing and tax forecasting for the OBBBA era.</subtitle>
+  <link href="https://salary-oracle-2026.app/feed.xml" rel="self" />
+  <link href="https://salary-oracle-2026.app/" />
+  <updated>2026-04-30T10:00:00Z</updated>
+  <id>https://salary-oracle-2026.app/</id>
+  <author>
+    <name>Oracle Audit Labs</name>
+  </author>
+  <entry>
+    <title>OBBBA Law: The $40,400 SALT Shield Explained</title>
+    <link href="https://salary-oracle-2026.app/articles/salt-shield" />
+    <id>https://salary-oracle-2026.app/articles/salt-shield</id>
+    <updated>2026-04-30T10:00:00Z</updated>
+    <summary>A deep-dive into how the 2026 OBBBA tax updates reset the purchasing power baseline for US workers.</summary>
+  </entry>
+</feed>

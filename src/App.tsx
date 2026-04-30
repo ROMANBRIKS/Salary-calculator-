@@ -598,6 +598,23 @@ export default function App() {
         { "@type": "HowToStep", "text": "Calculate Federal Brackets (10% to 37% Tiering)" },
         { "@type": "HowToStep", "text": "Subtract FICA and State Liabilities based on Geo-Cache" }
       ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Dataset",
+      "name": "US OBBBA Financial Projection Data (2026-2030)",
+      "description": "Calculated fiscal datasets for US personal income tax liabilities under the OBBBA regulatory framework.",
+      "license": "https://salary-oracle-2026.app/terms",
+      "variableMeasured": [
+        "Net Take-Home Pay",
+        "Effective Tax Rate",
+        "SALT Deduction Yield",
+        "Purchasing Power Index"
+      ],
+      "includedInDataCatalog": {
+        "@type": "DataCatalog",
+        "name": "Oracle Audit Labs Regional Economic Repository"
+      }
     }
   ];
 
